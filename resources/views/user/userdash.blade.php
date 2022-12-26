@@ -8,7 +8,7 @@
 <div class="container mt-1">
     <div class="row mt-5">
         <h3 class="text">Create your tickets</h3>
-        <button class="btn btn-success mb-3" style="margin-left: 690px;" id="btnCreateTick">Create Tickets</button>
+        <button class="btn btn-success mb-3" style="margin-left: 690px;" id="btnCreate">Create Tickets</button>
     </div>
     <table id="viewtable" class="table table-bordered data-table">
         <thead>
@@ -127,6 +127,7 @@
   </div>
 <!-- End View Ticket Modal -->
 @endsection
+
 @auth
     <script>
         var user = {
@@ -135,6 +136,7 @@
     };
 </script>
 @endauth
+
 @section('scripts')
 <script>
     $(document).ready(function() {
@@ -154,10 +156,9 @@
             ]
       	});
   
-      	$('#btnCreateTick').click(function (e) { 
+      	$('#btnCreate').click(function (e) { 
             e.preventDefault();
-            
-          	$('#CreateTicket').modal('show')
+          	$('#CreateTicket').modal('show');
       	});
 
       	$('#btnAdd').click(function (e) {

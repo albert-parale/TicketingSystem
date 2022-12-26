@@ -51,6 +51,7 @@ Route::group(['middleware' => ['auth', 'user'], 'prefix' => 'user', 'as' => 'use
 
 Route::group(['middleware' => ['auth','admin'], 'prefix' => 'admin', 'as' => 'admin.'], function(){
     // Admin Dasboard
+    
     Route::get('/dashboard', ['uses'=>'AdminDashController@index', 'as'=>'admin.index']);
     Route::post('update/{id}', 'AdminDashController@update');
     Route::get('dashboard/{id}', 'AdminDashController@edit');

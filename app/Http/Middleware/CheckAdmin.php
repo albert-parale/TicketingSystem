@@ -16,14 +16,15 @@ class CheckAdmin
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check()) 
+        if(Auth::check())
         {
-            if (auth()->user()->role == 'admin'){
-                return redirect('admin');
+            if (auth()->user()->role == 'admin')
+            {
+                return $next($request);
             } 
             else if (auth()->user()->role == 'client') 
             {
-                return $next($request);
+                return redirect('user');
             }
         }
         abort(404);
