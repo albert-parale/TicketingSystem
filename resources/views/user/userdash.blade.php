@@ -8,7 +8,7 @@
 <div class="container mt-1">
     <div class="row mt-5">
         <h3 class="text">Create your tickets</h3>
-        <button class="btn btn-success mb-3" style="margin-left: 690px;" id="btnCreate">Create Tickets</button>
+        <button class="btn btn-dark mb-3" style="margin-left: 690px;" id="btnCreate">Create Tickets</button>
     </div>
     <table id="viewtable" class="table table-bordered data-table">
         <thead>
@@ -43,7 +43,7 @@
                     
                     <div class="form-group">
                         <label for="created_by" class="col-form-label">Created By</label>
-                        <input type="text" class="form-control" id="created_by" value="Client" disabled>
+                        <input type="text" class="form-control" id="created_by" value="{{ auth()->user()->name }}" disabled>
                     </div>
                     <div class="form-group">
                         <label for="firstname" class="col-form-label">Ticket Description</label>
@@ -77,6 +77,24 @@
  </div>
 <!-- End Add Ticket Modal -->
 
+{{-- Success Creating Ticket --}}
+<div class="modal fade" id="success_msg" role="dialog" tabindex="-1">
+    <div class="success">
+        <div class="modal-dialog-success">
+            <div class="col-xs-12 pade_none">
+                <button type="button" class="close" onClick="closeConfirm();" data-dismiss="modal">&times;</button>
+                <div class="col-xs-12 pade_none">
+                    <h2>Success!</h2>
+                    <p>Your message has been sent.</p>
+                </div>
+                <div class="col-xs-12 pad_none">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- End Success Creating Ticket --}}
+
 <!-- Start View Ticket Modal -->
 <div class="modal fade" id="ViewTicket" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -94,7 +112,7 @@
                     <form>
                     <div class="form-group">
                         <label for="created_by" class="col-form-label">Created By</label>
-                        <input type="text" class="form-control" id="ucreated_by" value="Client" disabled>
+                        <input type="text" class="form-control" id="ucreated_by" disabled>
                     </div>
                     <div class="form-group">
                         <label for="firstname" class="col-form-label">Ticket Description</label>
@@ -146,7 +164,7 @@
             serverSide: true,
             ajax: "{{ route('user.userdash') }}",
             columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'id', name: 'ticket_id'},
                 {data: 'created_by', name: 'created_by'},
                 {data: 'ticket_desc', name: 'ticket_desc'},
                 {data: 'importance', name: 'importance'},
@@ -162,7 +180,7 @@
       	});
 
       	$('#btnAdd').click(function (e) {
-          	e.preventDefault();
+            
 
             var userId = user.id;
 
@@ -174,18 +192,22 @@
                 'status' : $('#status').val(),
                 'created_at' : $('#created_at').val(),
             }
-            
-  			
-	        $.ajax({
-	            type: "POST",
-	            url: "user/userdash",
-	            data: data,
-	            dataType: "json",
-	            success: function (response) {
-	                $('#CreateTicket').modal('hide')
-	            }
-	        });
+
+            $.ajax({
+                type: "POST",
+                url: "user/userdash",
+                data: data,
+                dataType: "json",
+                complete: function (response) {
+
+                    $('#CreateTicket').modal('hide');
+                    
+                    
+                }
+            });
+            e.preventDefault();
         });
+
 
         $('#viewtable').on ('click', '.view', (function (e) {
             e.preventDefault();

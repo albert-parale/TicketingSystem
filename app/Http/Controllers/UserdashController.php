@@ -25,7 +25,7 @@ class UserdashController extends Controller
                     ->setRowId('id')
                     ->addIndexColumn()
                     ->addColumn('action', function($data) {
-                           $btnView = '<button type="button" name="view" id="'.$data->id.'" class="view btn btn-primary btn-sm" 
+                           $btnView = '<button type="button" name="view" id="'.$data->id.'" class="view btn btn-dark btn-sm" 
                            data-info="'.$data->id.','.$data->created_by.','.$data->ticket_desc.','.$data->importance.','.$data->status.','.$data->created_at.'">View</button>';
                            return $btnView;
                     })

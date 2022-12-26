@@ -33,6 +33,7 @@
         </div>
         <div class="modal-body">
             <form>
+                @csrf
                 <input type="text" id="view_id" hidden>
                 <div class="form-group">
                   <label for="firstname" class="col-form-label">Created By</label>
@@ -74,7 +75,7 @@
     var table = $('.data-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('admin.index') }}",
+        ajax: "{{ route('admin.dashboard') }}",
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
             {data: 'created_by', name: 'created_by'},
