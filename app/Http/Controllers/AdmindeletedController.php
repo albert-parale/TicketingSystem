@@ -16,13 +16,13 @@ class AdmindeletedController extends Controller
     public function index(Request $request) {
         if ($request->ajax()) {
             $data = Tickets::latest()
-                        ->where([['status', '=', 'Deleted']])
-                        ->get();
+                        ->where([['status', '=', 'Archived']])
+                        ->latest()->get();
             return DataTables::of($data)
                     ->setRowId('id')
                     ->addIndexColumn()
                     ->addColumn('action', function($data) {
-                           $btnView = '<button type="button" name="view" id="'.$data->id.'" class="view btn btn-primary btn-sm">View</button>';
+                           $btnView = '<div class="text-center"><button type="button" name="view" id="'.$data->id.'"class="view btn btn-secondary btn-sm mx-auto">View</button></div>';
                            return $btnView;
                     })
                     ->rawColumns(['action'])
@@ -48,18 +48,5 @@ class AdmindeletedController extends Controller
             ]);
         }
     }
-
-    //  public function update($id) 
-    // {
-    //     $tickets = Tickets::find($id);
-    //     $tickets->created_by = request('created_by');
-    //     $tickets->ticket_desc = request('ticket_desc');
-    //     $tickets->importance = request('importance');
-    //     $tickets->status = request('status');
-    //     $tickets->remarks = request('remarks');
-    //     $tickets->save();
-    //     return response()->json();
-
-    // }
 
 }

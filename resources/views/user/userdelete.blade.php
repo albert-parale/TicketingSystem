@@ -5,14 +5,14 @@
 
 @include('layouts.tablenavbaruser')
 <!-- Start Datatable -->
-<div class="container mt-1">
-    <div class="row mt-5">
-        <h3 class="text">Deleted Tickets</h3>
+<div class="container mt-5">
+    <div class="row mb-4">
+        <h3 class="text">Delete Tickets</h3>
     </div>
     <table id="viewtable" class="table table-bordered data-table">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Ticket ID</th>
                 <th>Created by</th>
                 <th>Ticket Description</th>
                 <th>Importance</th>
@@ -41,8 +41,7 @@
         <div class="modal-body">
             <form>
                 <input type="text" id="view_id" hidden>
-                <form>
-                    <form>
+                @csrf
                     <div class="form-group">
                         <label for="created_by" class="col-form-label">Created By</label>
                         <input type="text" class="form-control" id="ucreated_by" value="Client" disabled>
@@ -92,13 +91,13 @@
             serverSide: true,
             ajax: "{{ route('user.userdelete') }}",
             columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'id', name: 'DT_RowIndex'},
                 {data: 'created_by', name: 'created_by'},
                 {data: 'ticket_desc', name: 'ticket_desc'},
                 {data: 'importance', name: 'importance'},
                 {data: 'status', name: 'status'},
                 {data: 'remarks', name: 'remarks'},
-                {data: 'created_at', name: 'created_at'},
+                {data: 'posted_on', name: 'posted_on'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ]
         });
@@ -125,7 +124,7 @@
                     $('#uimportance').val(response.tickets.importance),
                     $('#ustatus').val(response.tickets.status),
                     $('#uremarks').val(response.tickets.remarks),
-                    $('#ucreated_at').val(response.tickets.created_at)
+                    $('#ucreated_at').val(response.tickets.posted_on)
                 }
             });
         }));

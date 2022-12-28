@@ -5,14 +5,14 @@
 
 @include('layouts.tablenavbaruser')
 <!-- Start Datatable -->
-<div class="container mt-1">
-    <div class="row mt-5">
+<div class="container mt-5">
+    <div class="row mb-4">
         <h3 class="text">Resolved Tickets</h3>
     </div>
     <table id="viewtable" class="table table-bordered data-table">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Ticket ID</th>
                 <th>Created by</th>
                 <th>Ticket Description</th>
                 <th>Importance</th>
@@ -28,6 +28,50 @@
 </div>
 <!-- End Datatable -->
 
+{{-- Archived Validation --}}
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirm Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this ticket?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmUpdateButton">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- End Archived Validation --}}
+
+{{-- Archived Validation --}}
+<div class="modal fade" id="oconfirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirm Re-Open</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to Re-Open this ticket?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="oconfirmUpdateButton">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- End Archived Validation --}}
+
 <!-- Start View Ticket Modal -->
 <div class="modal fade" id="ViewTicket" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -41,8 +85,7 @@
         <div class="modal-body">
             <form>
                 <input type="text" id="view_id" hidden>
-                <form>
-                    <form>
+                @csrf
                     <div class="form-group">
                         <label for="created_by" class="col-form-label">Created By</label>
                         <input type="text" class="form-control" id="ucreated_by" value="Client" disabled>
@@ -62,7 +105,7 @@
                     </div>
                     <div class="form-group">
                         <label for="firstname" class="col-form-label">Status</label>
-                        <input type="text" class="form-control" id="ustatus" value="Open" disabled>
+                        <input type="text" class="form-control" id="ustatus" disabled>
                     </div>
                     <div class="form-group">
                         <label for="firstname" class="col-form-label">Remarks</label>
@@ -75,8 +118,9 @@
                 </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" id="btnUpdate" class="btn btn-primary">Archived</button>
+            <button type="button" id="btnArchived" class="btn btn-primary">Archived</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" id="btnOpen" class="btn btn-success">Open Ticket?</button>
         </div>
       </div>
     </div>
@@ -93,13 +137,13 @@
             serverSide: true,
             ajax: "{{ route('user.userresolved') }}",
             columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'id', name: 'DT_RowIndex'},
                 {data: 'created_by', name: 'created_by'},
                 {data: 'ticket_desc', name: 'ticket_desc'},
                 {data: 'importance', name: 'importance'},
                 {data: 'status', name: 'status'},
                 {data: 'remarks', name: 'remarks'},
-                {data: 'created_at', name: 'created_at'},
+                {data: 'posted_on', name: 'posted_on'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ]
         });
@@ -126,37 +170,99 @@
                     $('#uimportance').val(response.tickets.importance),
                     $('#ustatus').val(response.tickets.status),
                     $('#uremarks').val(response.tickets.remarks),
-                    $('#ucreated_at').val(response.tickets.created_at)
+                    $('#ucreated_at').val(response.tickets.posted_on)
                 }
             });
         }));
 
 
-        $('#btnUpdate').click(function (e) {
+        // $('#btnUpdate').click(function (e) {
+        //     e.preventDefault();
+            
+        //     var update_id = $('#view_id').val();
+           
+        //     var data = {
+                
+        //         'created_by' : $('#ucreated_by').val(),
+        //         'ticket_desc' : $('#uticket_desc').val(),
+        //         'importance' : $('#uimportance').val(),
+        //         'status' : 'Archived',
+        //         'remarks' : $('#uremarks').val(),
+        //         'posted_on' : $('#ucreated_at').val()
+        //     }
+
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "update/"+update_id,
+        //         data: data,
+        //         dataType: "json",
+        //         success: function (response) { 
+        //             $('#viewtable').DataTable().ajax.reload();
+        //         }
+        //     });
+        //     $('#ViewTicket').modal('hide');
+        // });
+
+        $('#btnArchived').click(function (e) {
             e.preventDefault();
             
             var update_id = $('#view_id').val();
-           
             var data = {
-                
                 'created_by' : $('#ucreated_by').val(),
                 'ticket_desc' : $('#uticket_desc').val(),
                 'importance' : $('#uimportance').val(),
                 'status' : 'Archived',
                 'remarks' : $('#uremarks').val(),
-                'created_at' : $('#ucreated_at').val()
+                'posted_on' : $('#ucreated_at').val()
             }
-
-            $.ajax({
-                type: "POST",
-                url: "update/"+update_id,
-                data: data,
-                dataType: "json",
-                success: function (response) {
-                    
-                }
-            });
             $('#ViewTicket').modal('hide');
+            $('#confirmationModal').modal('show');
+
+            // handle the update action when the user clicks the "Update" button
+            $('#confirmUpdateButton').click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "update/"+update_id,
+                    data: data,
+                    dataType: "json",
+                    success: function (response) {
+                        $('#viewtable').DataTable().ajax.reload();
+                    }
+                });
+                
+                $('#confirmationModal').modal('hide');
+            });
+        });
+
+        $('#btnOpen').click(function (e) {
+            e.preventDefault();
+            
+            var update_id = $('#view_id').val();
+            var data = {
+                'created_by' : $('#ucreated_by').val(),
+                'ticket_desc' : $('#uticket_desc').val(),
+                'importance' : $('#uimportance').val(),
+                'status' : 'Open',
+                'remarks' : ' ',
+                'posted_on' : $('#ucreated_at').val()
+            }
+            $('#ViewTicket').modal('hide');
+            $('#oconfirmationModal').modal('show');
+
+            // handle the update action when the user clicks the "Update" button
+            $('#oconfirmUpdateButton').click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "update/"+update_id,
+                    data: data,
+                    dataType: "json",
+                    success: function (response) {
+                        $('#viewtable').DataTable().ajax.reload();
+                    }
+                });
+                
+                $('#oconfirmationModal').modal('hide');
+            });
         });
     });
   </script>

@@ -7,7 +7,7 @@
     <table class="table table-bordered data-table" id="viewtable">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Ticket ID</th>
                 <th>Created By</th>
                 <th>Ticket Description</th>
                 <th>Importance</th>
@@ -17,7 +17,7 @@
                 <th width="100px">Action</th>
             </tr>
         </thead>
-        <tbody class="text-center">
+        <tbody>
         </tbody>
     </table>
 </div>
@@ -81,13 +81,13 @@
         serverSide: true,
         ajax: "{{ route('admin.Admindeleted') }}",
         columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'id', name: 'DT_RowIndex'},
             {data: 'created_by', name: 'created_by'},
             {data: 'ticket_desc', name: 'ticket_desc'},
             {data: 'importance', name: 'importance'},
             {data: 'status', name: 'status'},
             {data: 'remarks', name: 'remarks'},
-            {data: 'created_at', name: 'created_at'},
+            {data: 'posted_on', name: 'posted_on'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ]
     });
@@ -108,38 +108,12 @@
                 $('#importance').val(response.tickets.importance);
                 $('#status').val(response.tickets.status);
                 $('#remarks').val(response.tickets.remarks);
-                $('#created_at').val(response.tickets.created_at);
+                $('#created_at').val(response.tickets.posted_on);
+
             }
         });
     }));
 
-
-    // $('#btnUpdate').click(function (e) {
-    //     e.preventDefault();
-        
-    //     var update_id = $('#view_id').val();
-        
-    //     var data = {
-            
-    //         'created_by' : $('#created_by').val(),
-    //         'ticket_desc' : $('#ticket_desc').val(),
-    //         'importance' : $('#importance').val(),
-    //         'status' : 'Resolved',
-    //         'remarks' : $('#remarks').val(),
-    //         'created_at' : $('#created_at').val()
-    //     }
-
-    //     $.ajax({
-    //         type: "POST",
-    //         url: "update/"+update_id,
-    //         data: data,
-    //         dataType: "json",
-    //         success: function (response) {
-                
-    //         }
-    //     });
-    //     $('#ViewTicket').modal('hide');
-    // });
   });
 </script>
 @endsection

@@ -7,7 +7,7 @@ use App\Tickets;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
-
+use Illuminate\Support\Facades\Session;
 
 class UserdashController extends Controller
 {
@@ -18,15 +18,13 @@ class UserdashController extends Controller
         if ($request->ajax()) {
             $id = auth()->user()->id;
             $data = Tickets::with('user')
-                          ->where([['user_id', '=', $id], ['status', '=', 'open']])
-                          ->get();
-
+                            ->where([['user_id', '=', $id], ['status', '=', 'Open']])
+                            ->latest()->get();
             return DataTables::of($data)
                     ->setRowId('id')
                     ->addIndexColumn()
                     ->addColumn('action', function($data) {
-                           $btnView = '<button type="button" name="view" id="'.$data->id.'" class="view btn btn-dark btn-sm" 
-                           data-info="'.$data->id.','.$data->created_by.','.$data->ticket_desc.','.$data->importance.','.$data->status.','.$data->created_at.'">View</button>';
+                           $btnView = '<div class="text-center"><button type="button" name="view" id="'.$data->id.'"class="view btn btn-secondary btn-sm mx-auto">View</button></div>';
                            return $btnView;
                     })
                     ->rawColumns(['action'])
@@ -43,7 +41,7 @@ class UserdashController extends Controller
             'ticket_desc' => 'required',
             'importance' => 'required',
             'status' => 'required',
-            'created_at' => 'required',
+            'posted_on' => 'required',
             'user_id' => 'required|exists:users,id'
         ]);
 
@@ -53,7 +51,7 @@ class UserdashController extends Controller
         $tickets->ticket_desc = request('ticket_desc');
         $tickets->importance = request('importance');
         $tickets->status = request('status');
-        $tickets->created_at = request('created_at');
+        $tickets->posted_on = request('posted_on');
         $tickets->save();
         return response()->json();
     }
@@ -74,6 +72,19 @@ class UserdashController extends Controller
                 'tickets' => 'tickets not Found',
             ]);
         }
+    }
+
+    public function update($id) 
+    {
+        $tickets = Tickets::find($id);
+        $tickets->created_by = request('created_by');
+        $tickets->ticket_desc = request('ticket_desc');
+        $tickets->importance = request('importance');
+        $tickets->status = request('status');
+        $tickets->posted_on = request('posted_on');
+        $tickets->save();
+        return response()->json();
+
     }
 
 }

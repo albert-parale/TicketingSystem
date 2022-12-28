@@ -5,14 +5,14 @@
 
 @include('layouts.tablenavbaruser')
 <!-- Start Datatable -->
-<div class="container mt-1">
-    <div class="row mt-5">
-        <h3 class="text">Assigned Tickets</h3>
+<div class="container mt-5">
+    <div class="row mb-4">
+        <h3 class="text">Pending Tickets</h3>
     </div>
     <table id="viewtable" class="table table-bordered data-table">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Ticket ID</th>
                 <th>Created by</th>
                 <th>Ticket Description</th>
                 <th>Importance</th>
@@ -39,9 +39,9 @@
         </div>
         <div class="modal-body">
             <form>
+                @csrf
                 <input type="text" id="view_id" hidden>
-                <form>
-                    <form>
+
                     <div class="form-group">
                         <label for="created_by" class="col-form-label">Created By</label>
                         <input type="text" class="form-control" id="ucreated_by" value="Client" disabled>
@@ -87,12 +87,12 @@
             serverSide: true,
             ajax: "{{ route('user.userpending') }}",
             columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'id', name: 'DT_RowIndex'},
                 {data: 'created_by', name: 'created_by'},
                 {data: 'ticket_desc', name: 'ticket_desc'},
                 {data: 'importance', name: 'importance'},
                 {data: 'status', name: 'status'},
-                {data: 'created_at', name: 'created_at'},
+                {data: 'posted_on', name: 'posted_on'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ]
         });
@@ -117,7 +117,7 @@
                     $('#uticket_desc').val(response.tickets.ticket_desc),
                     $('#uimportance').val(response.tickets.importance),
                     $('#ustatus').val(response.tickets.status),
-                    $('#ucreated_at').val(response.tickets.created_at)
+                    $('#ucreated_at').val(response.tickets.posted_on)
                 }
             });
         }));

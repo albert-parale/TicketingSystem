@@ -7,7 +7,7 @@
     <table class="table table-bordered data-table" id="viewtable">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Ticket ID</th>
                 <th>Created By</th>
                 <th>Ticket Description</th>
                 <th>Importance</th>
@@ -16,7 +16,7 @@
                 <th width="100px">Action</th>
             </tr>
         </thead>
-        <tbody class="text-center">
+        <tbody>
         </tbody>
     </table>
 </div>
@@ -52,7 +52,7 @@
                 </div>
                 <div class="form-group">
                   <label for="firstname" class="col-form-label">Remarks</label>
-                  <textarea class="form-control" id="remarks"></textarea>
+                  <textarea class="form-control" id="remarks" required></textarea>
                 </div>
                 <div class="form-group">
                   <label for="lastname" class="col-form-label">Created At</label>
@@ -80,12 +80,12 @@
         serverSide: true,
         ajax: "{{ route('admin.Adminpending') }}",
         columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'id', name: 'DT_RowIndex'},
             {data: 'created_by', name: 'created_by'},
             {data: 'ticket_desc', name: 'ticket_desc'},
             {data: 'importance', name: 'importance'},
             {data: 'status', name: 'status'},
-            {data: 'created_at', name: 'created_at'},
+            {data: 'posted_on', name: 'posted_on'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ]
     });
@@ -106,7 +106,7 @@
                 $('#importance').val(response.tickets.importance);
                 $('#status').val(response.tickets.status);
                 $('#remarks').val(response.tickets.remarks);
-                $('#created_at').val(response.tickets.created_at);
+                $('#created_at').val(response.tickets.posted_on);
             }
         });
     }));
@@ -124,7 +124,7 @@
             'importance' : $('#importance').val(),
             'status' : 'Resolved',
             'remarks' : $('#remarks').val(),
-            'created_at' : $('#created_at').val()
+            'posted_on' : $('#created_at').val()
         }
 
         $.ajax({
@@ -133,7 +133,7 @@
             data: data,
             dataType: "json",
             success: function (response) {
-                
+                $('#viewtable').DataTable().ajax.reload();
             }
         });
         $('#ViewTicket').modal('hide');

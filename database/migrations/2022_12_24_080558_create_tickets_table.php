@@ -21,6 +21,7 @@ class CreateTicketsTable extends Migration
             $table->string('importance');
             $table->string('remarks');
             $table->string('status');
+            $table->datetime('posted_on');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

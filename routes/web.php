@@ -12,32 +12,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
 Auth::routes();
 
 
-Route::get('/', function () {
-    Auth::logout();
-    return redirect('login');
-});
-
-// Route::get('/home', 'HomeController@index')->name('home');
-// Route::get('/assigned', 'HomeController@pending');
-// Route::get('/resolved', 'HomeController@resolved');
-// Route::get('/archived', 'HomeController@archived');
-
+// Route::get('/', function () {
+//     Auth::logout();
+//     return redirect('login');
+// });
 
 Route::group(['middleware' => ['auth', 'user'], 'prefix' => 'user', 'as' => 'user.'], function (){
 
-    Route::get('/', 'UserdashController@index')->name('userdash');
-
-    // Route::get('/userdash', ['uses' => 'UserdashController@index', 'as' => 'user.index']);
-    Route::post('/userdash', 'UserdashController@store');
+    Route::get('/userdash', 'UserdashController@index')->name('userdash');
+    Route::post('userdash/store', 'UserdashController@store');
     Route::get('edit/{id}', 'UserdashController@edit')->name('edit');
-    
+    Route::post('update/{id}', 'UserdashController@update');
+
     Route::get('/userpending', 'UserpendingController@index')->name('userpending');
 
     Route::get('/userresolved', 'UserresolvedController@index')->name('userresolved');
@@ -60,7 +53,6 @@ Route::group(['middleware' => ['auth','admin'], 'prefix' => 'admin', 'as' => 'ad
     Route::get('/Adminpending', 'AdminpendingController@index')->name('Adminpending');
     Route::get('Adminpending/{id}', 'AdminpendingController@edit');
     Route::post('update/{id}', 'AdminpendingController@update');
-    
     // End Route Admin Pending Tickets
 
     // Admin Resolved Tickets

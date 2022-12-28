@@ -14,12 +14,12 @@ class UserPendingController extends Controller
         if ($request->ajax()) {
             $id = auth()->user()->id;
             $data = Tickets::with('user')
-                            ->where([['status', '=', 'Pending']])
-                            ->get();
+                            ->where([['user_id', '=', $id], ['status', '=', 'Pending']])
+                            ->latest()->get();
             return DataTables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($data) {
-                           $btnView = '<button type="button" name="view" id="'.$data->id.'" class="view btn btn-primary btn-sm">View</button>';
+                           $btnView = '<div class="text-center"><button type="button" name="view" id="'.$data->id.'"class="view btn btn-secondary btn-sm mx-auto">View</button></div>';
                            return $btnView;
                     })
                     ->rawColumns(['action'])
