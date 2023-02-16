@@ -3,7 +3,7 @@
 @section('content')
 @include('layouts.tablenavbar')
  <div class="container mt-4">
-    <h3 class="text-center">Deleted by User Tickets</h3>
+    <h3 class="text-center">Deleted Tickets by User </h3>
     <table class="table table-bordered data-table" id="viewtable">
         <thead>
             <tr>
@@ -75,7 +75,11 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
-    
+    $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
     var table = $('.data-table').DataTable({
         processing: true,
         serverSide: true,

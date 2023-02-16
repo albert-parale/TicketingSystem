@@ -51,11 +51,11 @@
                         <textarea class="form-control" id="ticket_desc" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="firstname" class="col-form-label">Importance</label>
+                        <label for="importance" class="col-form-label">Importance</label>
                         <select class="form-control" id="importance" name="importance" required>
-                            <option>Select One</option>
+                            <option required>Select One</option>
                             <option>Urgent</option>
-                            <option>Mid</option>
+                            <option>High</option>
                             <option>Low</option>
                         </select>
                     </div>
@@ -65,7 +65,7 @@
                     </div>
                     <div class="form-group">
                         <label for="created_at" class="col-form-label">Submitted At</label>
-                        <input type="datetime-local" class="form-control" id="created_at" required>
+                        <input type="datetime-local" value="{{ now()->setTimezone('T')->format('Y-m-dTh:m') }}" class="form-control" id="created_at" required>
                     </div>
                 </form>
             </div>
@@ -109,7 +109,7 @@
             <h4 class="modal-title text-success">Success Message</h4>
         </div>
         <div class="modal-body">
-            <h5>Your ticket is created! Please wait for a while for the Admin to accept your ticket. Thank you!</h5>
+            <h5>Your ticket is created! Please wait for the Admin to accept your ticket. Thank you!</h5>
         </div>
         <div class="modal-footer">
             <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button> 
@@ -152,11 +152,11 @@
                 @csrf
                 <input type="text" id="view_id" hidden>
                     <div class="form-group">
-                        <label for="created_by" class="col-form-label">Created By</label>
+                        <label for="ucreated_by" class="col-form-label">Created By</label>
                         <input type="text" class="form-control" id="ucreated_by" value="Client" disabled>
                     </div>
                     <div class="form-group">
-                        <label for="firstname" class="col-form-label">Ticket Description</label>
+                        <label for="uticket_desc" class="col-form-label">Ticket Description</label>
                         <textarea class="form-control" id="uticket_desc" disabled></textarea>
                     </div>
                     <div class="form-group">
@@ -169,11 +169,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="firstname" class="col-form-label">Status</label>
+                        <label for="ustatus" class="col-form-label">Status</label>
                         <input type="text" class="form-control" id="ustatus" value="Open" disabled>
                     </div>
                     <div class="form-group">
-                        <label for="lastname" class="col-form-label">Submitted At</label>
+                        <label for="ucreated_at" class="col-form-label">Submitted At</label>
                         <input type="text" class="form-control" id="ucreated_at" disabled>
                     </div>
                 </form>
@@ -188,19 +188,15 @@
 <!-- End View Ticket Modal -->
 @endsection
 
-@auth
-    <script>
-        var user = {
-        id: {{ auth()->user()->id }},
-        name: '{{ auth()->user()->name }}'
-    };
-</script>
-@endauth
 
 @section('scripts')
 <script>
     $(document).ready(function() {
-
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         var table = $('.data-table').DataTable({
             processing: true,
             serverSide: true,
@@ -218,13 +214,15 @@
   
         $('#btnCreate').click(function (e) { 
             e.preventDefault();
-            
-            $('#CreateTicket').modal('show')
+            $('#CreateTicket').modal('show');
         });
 
         $('#btnAdd').click(function (e) {
             e.preventDefault();
 
+            var user = {
+                id: {{ auth()->user()->id }}
+            };
             var userId = user.id;
 
             var data = {
@@ -247,7 +245,6 @@
                     $('#viewtable').DataTable().ajax.reload();
                 },
                 error: function(response) {
-                    $('#CreateTicket').modal('hide');
                     $('#errorMessage').modal('show');
                 }
             });
@@ -273,7 +270,7 @@
                     $('#uticket_desc').val(response.tickets.ticket_desc);
                     $('#uimportance').val(response.tickets.importance);
                     $('#ustatus').val(response.tickets.status);
-                    $('#ucreated_at').val(response.tickets.created_at);
+                    $('#ucreated_at').val(response.tickets.posted_on);
                 }
             });
         }));
@@ -304,7 +301,6 @@
                         $('#viewtable').DataTable().ajax.reload();
                     }
                 });
-                
                 $('#confirmationModal').modal('hide');
             });
         });

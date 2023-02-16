@@ -99,7 +99,7 @@
                         <select class="form-control" id="uimportance" name="importance" disabled>
                             <option>Select One</option>
                             <option>Urgent</option>
-                            <option>Mid</option>
+                            <option>High</option>
                             <option>Low</option>
                         </select>
                     </div>
@@ -131,7 +131,11 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         var table = $('.data-table').DataTable({
             processing: true,
             serverSide: true,

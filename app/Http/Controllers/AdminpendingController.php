@@ -19,7 +19,6 @@ class AdminpendingController extends Controller
                         ->where([['status', '=', 'Pending']])
                         ->latest()->get();
             return DataTables::of($data)
-                    ->setRowId('id')
                     ->addIndexColumn()
                     ->addColumn('action', function($data) {
                            $btnView = '<div class="text-center"><button type="button" name="view" id="'.$data->id.'"class="view btn btn-secondary btn-sm mx-auto">View</button></div>';

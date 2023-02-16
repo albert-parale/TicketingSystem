@@ -19,11 +19,6 @@ Route::get('/', function () {
 Auth::routes();
 
 
-// Route::get('/', function () {
-//     Auth::logout();
-//     return redirect('login');
-// });
-
 Route::group(['middleware' => ['auth', 'user'], 'prefix' => 'user', 'as' => 'user.'], function (){
 
     Route::get('/userdash', 'UserdashController@index')->name('userdash');
@@ -63,7 +58,6 @@ Route::group(['middleware' => ['auth','admin'], 'prefix' => 'admin', 'as' => 'ad
 
     // Admin Deleted User Tickets
     Route::get('/Admindeleted', 'AdmindeletedController@index')->name('Admindeleted');
-    // Route::post('update/{id}', 'AdminresolvedController@update');
     Route::get('Admindeleted/{id}', 'AdmindeletedController@edit');
     // End Route Deleted User Tickets
 

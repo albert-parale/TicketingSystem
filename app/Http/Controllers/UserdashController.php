@@ -21,7 +21,6 @@ class UserdashController extends Controller
                             ->where([['user_id', '=', $id], ['status', '=', 'Open']])
                             ->latest()->get();
             return DataTables::of($data)
-                    ->setRowId('id')
                     ->addIndexColumn()
                     ->addColumn('action', function($data) {
                            $btnView = '<div class="text-center"><button type="button" name="view" id="'.$data->id.'"class="view btn btn-secondary btn-sm mx-auto">View</button></div>';
@@ -41,8 +40,7 @@ class UserdashController extends Controller
             'ticket_desc' => 'required',
             'importance' => 'required',
             'status' => 'required',
-            'posted_on' => 'required',
-            'user_id' => 'required|exists:users,id'
+            'posted_on' => 'required'
         ]);
 
         $tickets = new Tickets();
